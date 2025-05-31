@@ -49,3 +49,6 @@ Join the fight for truth. #JusticeMatrix #Audit #TruthIsLight”
 ---
 
 **Truth is Light!**
+
+## NFT Correction Log
+- May 2, 2025: NFT #0x1234 contained a typo in the eviction date. NFT #0x5678 supersedes it as the authoritative record.
