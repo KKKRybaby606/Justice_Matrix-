@@ -1,0 +1,57 @@
+name: Pin artifacts to NFT.Storage and create release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.0)'
+        required: true
+        default: 'v1.0'
+jobs:
+  pin_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Gather files
+        run: |
+          FILES=(matrix.md justice-timeline.dot justice-timeline.json matrix.json nft-metadata.json DISCLAIMER.md)
+          echo "::set-output name=files::">${FILES[*]}" 
+      - name: Pin files to nft.storage
+        env:
+          NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+        run: |
+          mkdir pinned || true
+          echo '{}' > cids.json
+          for F in matrix.md justice-timeline.dot justice-timeline.json matrix.json nft-metadata.json DISCLAIMER.md; do
+            echo "Uploading $F..."
+            RESP=$(curl -s -X POST "https://api.nft.storage/upload" -H "Authorization: Bearer $NFT_STORAGE_API_KEY" -F "file=@${F}")
+            CID=$(echo "$RESP" | jq -r '.value.cid')
+            echo "$F => $CID"
+            jq --arg f "$F" --arg c "$CID" '. + {($f):$c}' cids.json > tmp.json && mv tmp.json cids.json
+          done
+          cat cids.json
+          echo "CIDS=$(jq -r 'to_entries|map("
+(.key):
+(.value)")|join(", ")' cids.json)" > cids.env
+      - name: Create Release and attach cids.json
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload cids.json to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cids.json
+          asset_name: cids.json
+          asset_content_type: application/json
+
+Notes: This workflow requires you to add NFT_STORAGE_API_KEY to repository secrets. It pins the listed files and creates a GitHub release with cids.json attached.
