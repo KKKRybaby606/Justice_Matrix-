@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Justice Matrix — Week 4</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+</head>
+<body>
+  <div id="toolbar">
+    <input id="search" placeholder="Search node id or name" />
+    <button id="zoomFit">Fit</button>
+    <button id="exportSvg">Export SVG</button>
+    <button id="exportPng">Export PNG</button>
+    <label><input type="checkbox" id="toggleGlyphs" checked /> Glyphs</label>
+    <label><input type="checkbox" id="toggleAnchors" checked /> Audit Anchors</label>
+    <label><input type="checkbox" id="toggleClusters" checked /> Numeric Clusters</label>
+    <label><input type="checkbox" id="toggleGenealogy" checked /> Genealogy</label>
+    <label><input type="checkbox" id="toggleScrollgrid" checked /> Scrollgrid</label>
+    <label><input type="checkbox" id="toggleDao" checked /> DAO/NFT</label>
+    <label><input type="checkbox" id="toggleLinks" checked /> Triadic Links</label>
+  </div>
+
+  <div id="layout">
+    <div id="canvasWrap">
+      <svg id="viz" width="1200" height="800"></svg>
+    </div>
+    <aside id="panel">
+      <h3>Evidence</h3>
+      <div id="evidence">Select a node to view evidence (SHA‑256, IPFS CIDs)</div>
+      <h3>Legend</h3>
+      <div id="legend"></div>
+    </aside>
+  </div>
+
+  <div id="tooltip" class="hidden"></div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
