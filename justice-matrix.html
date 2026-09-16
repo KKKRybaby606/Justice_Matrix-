@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice Matrix - Nested Arrays</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a2e;
+            color: #00ff00;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #00aa00;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .grid {
+            display: inline-grid;
+            gap: 2px;
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .cell {
+            width: 40px;
+            height: 40px;
+            background: rgba(0,50,0,0.3);
+            border: 1px solid #00aa00;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .cell:hover {
+            background: rgba(0,255,0,0.2);
+        }
+        
+        .cell.active {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        #info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,50,0,0.2);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚖️ JUSTICE MATRIX - Nested Arrays</h1>
+    <p>Abdul H. Muhammad | Case 2024CH04560</p>
+    
+    <div class="controls">
+        <button onclick="setSize(10)">10×10 (Allah)</button>
+        <button onclick="setSize(9)">9×9 (Sudoku)</button>
+        <button onclick="setSize(8)">8×8 (Chess)</button>
+        <button onclick="setSize(5)">5×5</button>
+        <button onclick="setSize(3)">3×3</button>
+        <button onclick="resetGrid()">Reset</button>
+    </div>
+    
+    <div id="grid" class="grid"></div>
+    
+    <div id="info">
+        <p>Clicks: <span id="clicks">0</span></p>
+        <p id="message">Select a grid size to start</p>
+    </div>
+
+    <script>
+        let currentSize = 0;
+        let gridData = [];
+        let clicks = 0;
+        
+        function setSize(size) {
+            currentSize = size;
+            clicks = 0;
+            document.getElementById('clicks').textContent = clicks;
+            gridData = Array(size).fill(null).map(() => Array(size).fill(0));
+            renderGrid();
+            document.getElementById('message').textContent = `Grid: ${size}×${size}`;
+        }
+        
+        function renderGrid() {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            gridEl.style.gridTemplateColumns = `repeat(${currentSize}, 40px)`;
+            
+            for (let i = 0; i < currentSize; i++) {
+                for (let j = 0; j < currentSize; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    if (gridData[i][j]) cell.classList.add('active');
+                    cell.textContent = gridData[i][j] ? '●' : '○';
+                    cell.onclick = () => toggleCell(i, j);
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+        
+        function toggleCell(row, col) {
+            gridData[row][col] = gridData[row][col] ? 0 : 1;
+            clicks++;
+            document.getElementById('clicks').textContent = clicks;
+            renderGrid();
+        }
+        
+        function resetGrid() {
+            if (currentSize > 0) {
+                setSize(currentSize);
+            }
+        }
+    </script>
+</body>
+</html>
